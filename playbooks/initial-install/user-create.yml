@@ -1,0 +1,88 @@
+---
+
+- name: "user create"
+  hosts: <inventory>
+  become: true
+  tasks: 
+    
+    - name: "Create user"
+      user:
+        name: <username>
+        comment: "Systems Administrator"
+        password: 
+        home: /home/<username>
+        shell: /bin/bash
+        groups: sudo
+        append: yes
+    
+    - name: "Creating SSH directory."
+      file:
+        path: /home/<username>/.ssh
+        state: directory
+        owner: <username>
+        group: <username>
+        mode: 0775
+    
+    - name: "Adding public key"
+      copy:
+        src: ./admin-authorized_keys 
+        dest: /home/<username>/.ssh/authorized_keys
+        owner: <username>
+        group: <username>
+        mode: 0600
+
+    - name: "Create Ansible user"
+      user:
+        name: ansible
+        comment: "Ansible user"
+        home: /home/ansible
+        shell: /bin/bash
+        groups: sudo
+        append: yes
+     
+    - name: "Creating SSH directory."
+      file:
+        path: /home/ansible/.ssh
+        state: directory
+        owner: ansible
+        group: ansible
+        mode: 0775
+
+    - name: "Adding public key for ansible"
+      copy:
+        src: ./ansible-authorized_keys
+        dest: /home/ansible/.ssh/authorized_keys
+        owner: ansible
+        group: ansible
+        mode: 0600
+
+    - name: "Changing SSH directory permissions for new users."
+      file:
+        path: /home/<username>/.ssh/
+        owner: <username>
+        group: <username>
+        mode: 0700
+      file:
+        path: /home/ansible/.ssh/
+        owner: ansible
+        group: ansible
+        mode: 0700
+     
+    - name: "Disallow password authentication"
+      lineinfile: 
+        path: /etc/ssh/sshd_config
+        regexp: "^PasswordAuthentication"
+        line: "PasswordAuthentication no"
+        state: present
+    - name: "Disallow root SSH access"
+      lineinfile: 
+        path: /etc/ssh/sshd_config
+        regexp: "^PermitRootLogin"
+        line: "PermitRootLogin no"
+        state: present
+
+    - name: "Restarting SSH"
+      systemd: 
+        name: sshd
+        state: restarted
+

@@ -1,0 +1,57 @@
+---
+- name: iptables baseline
+  hosts: dev 
+  become: true
+  tasks: 
+    
+      - name: Default behavior for inbound
+        iptables: 
+          chain: INPUT
+          ctstate: ESTABLISHED,RELATED
+          jump: ACCEPT
+
+      - name: Default behavior for outbound
+        iptables: 
+          chain: OUTPUT
+          ctstate: ESTABLISHED
+          jump: ACCEPT
+
+      - name: loopback inbound
+        iptables:
+          chain: INPUT
+          in_interface: lo
+          protocol: all
+          jump: ACCEPT
+          action: insert
+
+      - name: loopback outbound
+        iptables:
+          chain: OUTPUT
+          out_interface: lo
+          protocol: all
+          jump: ACCEPT   
+          action: insert
+          
+      - name: ssh inbound
+        iptables:
+          chain: INPUT
+          protocol: tcp
+          destination_port: 22
+          ctstate: NEW,ESTABLISHED
+          jump: ACCEPT
+          action: insert
+
+      - name: ssh outbound
+        iptables:
+          chain: OUTPUT
+          protocol: tcp
+          destination_port: 22
+          ctstate: ESTABLISHED 
+          jump: ACCEPT
+          action: insert
+          
+      - name: drop Invalid
+        iptables: 
+          chain: INPUT
+          ctstate: Invalid
+          jump: DROP
