@@ -1,0 +1,21 @@
+---
+- name: start ubuntu bind container
+  hosts: localhost
+  connection: local
+  become: true
+  tasks:
+
+      - name: Install pip
+        easy_install: name=pip state=latest
+
+      - name: Install docker-py
+        pip: name=docker-py executable=/usr/local/bin/pip
+      
+      - name: "spin up container"
+        docker_container:
+          name: "testing-bind"
+          image: "ubuntu/bind"
+          ports:
+            - "53:53"
+            - "53:53/udp"
+            - "2000:22"
