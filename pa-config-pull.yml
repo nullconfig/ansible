@@ -1,0 +1,27 @@
+---
+- name: Palo Alto API configuration pull   
+  hosts: all
+  connection: local
+  tasks:
+    - name: Backup Palo
+      vars:
+        api_key: <api_key>
+      
+      uri:
+        validate_certs: no
+        url: "https://<ip_address>/api/?type=config&action=show&key={{ api_key }}"
+        return_content: yes
+        method: POST
+      register: result
+
+    - name: copy content
+      copy:
+        content: "{{ result.content }}"
+        dest: configs/{{ inventory_hostname }}.cfg
+
+    - name: Push configs to repository
+      shell: "{{ lookup('template', 'pa-git-push.j2') }}"
+      args:
+        executable: /bin/bash
+      register: pa-git-push_result
+...
