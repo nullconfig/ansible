@@ -1,0 +1,15 @@
+---
+- name: envoy and docker
+  hosts: host01
+  become_user: "{{ user }}"
+  become_method: sudo
+  roles:
+    - fresh-run
+   
+- name: datapump deploy
+  hosts: host02
+  become_user: "{{ user }}"
+  become_method: sudo
+  roles:
+    - daemon-run
+...

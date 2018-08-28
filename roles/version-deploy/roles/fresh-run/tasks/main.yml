@@ -1,0 +1,13 @@
+---
+- name: fresh_run.sh update and run
+  template: 
+     src: fresh_run.j2
+     dest: /home/{{ user }}/fresh_runner.sh
+- file:
+    path: /home/{{ user }}/fresh_runner.sh
+    mode: 0770
+- shell: /home/{{ user }}/fresh_runner.sh
+- file:
+    path: /home/{{ user }}/fresh_runner.sh
+    state: absent
+...

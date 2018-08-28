@@ -1,0 +1,27 @@
+# Username
+user: ec2-user
+
+# AWS creds to use
+aws_creds: <replace with real value>
+
+# Set the correct environment variable for node
+node_env:
+  prod_branch: prod
+  stage_branch: staging
+
+# versions to update from and to
+branch:
+  old_version: RELEASE_12.1
+  new_version: RELEASE_13.1
+
+# crontabs
+crontab:
+   files:
+     - aggregate-daily.sh
+     - aggregate-weekly.sh
+     - alerts-daily.sh
+     - alerts-weekly.sh
+     - emails-daily.sh
+     - emails-monthly.sh
+     - emails-weekly.sh
+ 

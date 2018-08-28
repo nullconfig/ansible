@@ -1,0 +1,50 @@
+#!/bin/bash
+
+BRANCH="{{ branch.new_version }}"
+NODE_ENV="{{ node_env.stage_branch }}"
+CREDS="{{ aws_creds }}"
+
+if [ -z "$BRANCH" ]
+then
+
+    echo -e "Please provide a branch to deploy\n"
+    echo -e "Usage: $0 <Relase or Branch Name>\n\n"
+else
+
+ echo $BRANCH > ~/RUNNING_BRANCH
+
+ echo " -- STARTED -- " && echo
+
+ echo " -- Running containers with { NODE_ENV: \"${NODE_ENV}\", BRANCH: \"${BRANCH}\" } -- "  && echo
+
+  #auth
+ eval $(aws ecr get-login)
+
+ ## remove running containers
+ echo " -- Removing all running containers (except grep -v sumo) -- "  && echo
+ /usr/bin/docker ps -a | grep -v sumo | awk '{print $1}' | grep -v CONTAINER | xargs /usr/bin/docker rm -f
+
+ ## remove all images
+ echo " -- Removing all images (except grep -v sumo) -- " && echo
+ /usr/bin/docker images -a | grep -v sumo | awk '{print $3}' | grep -v IMAGE | xargs /usr/bin/docker rmi -f
+
+ /usr/bin/docker run --restart=always -p 8000:8000 -e NODE_ENV=${NODE_ENV} -d --name=web ${CREDS}.amazonaws.com/${BRANCH}
+ /usr/bin/docker run --restart=always -p 8001:8001 -e NODE_ENV=${NODE_ENV} -d --name=api ${CREDS}.amazonaws.com/${BRANCH}
+ /usr/bin/docker run --restart=always -p 8002:8002 -e NODE_ENV=${NODE_ENV} -d --name=api-crm ${CREDS}.amazonaws.com/${BRANCH}
+ /usr/bin/docker run --restart=always -p 8007:8007 -e NODE_ENV=${NODE_ENV} -d --name=api-form ${CREDS}.amazonaws.com/${BRANCH}
+ /usr/bin/docker run --restart=always -p 8005:8005 -e NODE_ENV=${NODE_ENV} -d --name=api-lead ${CREDS}.amazonaws.com/${BRANCH}
+ /usr/bin/docker run --restart=always -p 8009:8009 -e NODE_ENV=${NODE_ENV} -d --name=api-snapshot ${CREDS}.amazonaws.com/${BRANCH}
+ /usr/bin/docker run --restart=always -p 8006:8006 -e NODE_ENV=${NODE_ENV} -d --name=api-property ${CREDS}.amazonaws.com/${BRANCH}
+ /usr/bin/docker run --restart=always -p 8003:8003 -e NODE_ENV=${NODE_ENV} -d --name=api-sms ${CREDS}.amazonaws.com/${BRANCH}
+ /usr/bin/docker run --restart=always -p 8004:8004 -e NODE_ENV=${NODE_ENV} -d --name=api-sso ${CREDS}.amazonaws.com/${BRANCH}
+ /usr/bin/docker run --restart=always -p 8008:8008 -e NODE_ENV=${NODE_ENV} -d --name=api-tech ${CREDS}.amazonaws.com/${BRANCH}
+ /usr/bin/docker run --restart=always -p 8010:8010 -e NODE_ENV=${NODE_ENV} -d --name=api-email ${CREDS}.amazonaws.com/${BRANCH}
+
+ echo " -- docker ps:all -- " && echo
+ /usr/bin/docker ps -a
+
+ echo " -- docker images:all -- " && echo
+ /usr/bin/docker images -a
+
+ echo " -- COMPLETED -- "
+fi

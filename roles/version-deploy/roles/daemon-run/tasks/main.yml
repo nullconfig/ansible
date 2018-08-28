@@ -1,0 +1,22 @@
+---
+- name: find and replace
+  replace: 
+    dest: /home/{{ envoy_user }}/{{ item }}
+    regexp: "{{ branch.old_version }}"
+    replace: "{{ branch.new_version }}"
+    backup: no
+  with_items: 
+    - daemon_run.sh
+    - full_datapump.sh
+
+- name: run daemon_run.sh
+  shell: /home/{{ envoy_user }}/daemon_run.sh
+
+- name: update crontab
+  replace: 
+    dest: /home/{{ envoy_user }}/crontab/{{ item }}
+    regexp: "{{ branch.old_version }}"
+    replace: "{{ branch.new_version }}"
+    backup: no
+  with_items: "{{ crontab.files }}"
+...

@@ -1,0 +1,23 @@
+---
+# - name: remove pool members from pool
+#   roles:
+#     - f5-pool-start
+
+- name: deploy envoy
+  hosts: host01
+  become_user: "{{ user }}"
+  become_method: sudo
+  roles:
+    - fresh-run
+   
+- name: deploy envoy
+  hosts: host02
+  become_user: "{{ user }}"
+  become_method: sudo
+  roles:
+    - daemon-run
+
+# - name: replace pool members
+#   roles: 
+#     - f5-pool-
+...
