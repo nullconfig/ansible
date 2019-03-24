@@ -1,4 +1,4 @@
-# devtest elasticsearch cluster
+# elasticsearch cluster
 # master nodes
 module "masternode01" {
     source               = "../modules/es_masternode_template"
