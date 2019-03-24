@@ -1,0 +1,27 @@
+# default root user for this environment
+ansible_ssh_user: root
+ansible_ssh_pass: !vault |
+                    $ANSIBLE_VAULT;1.1;AES256
+                    ...
+
+# vsphere service user
+service_user: <service_user>
+service_user_pass: !vault |
+                    $ANSIBLE_VAULT;1.1;AES256
+                    ...
+vsphere_vm_name:
+  - masternode01
+  - masternode02
+  - masternode03
+  - clientnode01
+  - clientnode02
+  - datanode01
+  - datanode02
+  - datanode03
+
+## vsphere variables
+vsphere_hostname: <vsphere_fqdn>
+vsphere_datacenter: <datacenter>
+vsphere_folder: "{{ vsphere_datacenter }}/vm/<folder_name>"
+
+

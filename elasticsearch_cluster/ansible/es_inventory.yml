@@ -1,0 +1,32 @@
+---
+es_cluster:
+  children:
+    es_master:
+      hosts:
+        masternode01:
+          ansible_host: x.x.x.1
+        masternode02:
+          ansible_host: x.x.x.2
+        masternode03:
+          ansible_host: x.x.x.3
+    es_client:
+      hosts:
+        clientnode01:
+          ansible_host: x.x.x.4
+        clientnode02:
+          ansible_host: x.x.x.5
+    es_data:
+      hosts:
+        datanode01:
+          ansible_host: x.x.x.6
+        datanode02:
+          ansible_host: x.x.x.7
+        datanode03:
+          ansible_host: x.x.x.8
+        
+
+terraform_server:
+  hosts:
+    terraform01:
+      ansible_host: 1.1.1.1
+...

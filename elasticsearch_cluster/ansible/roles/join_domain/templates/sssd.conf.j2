@@ -1,0 +1,19 @@
+[sssd]
+domains = example.com
+config_file_version = 2
+services = nss, pam
+
+[domain/example.com]
+ad_domain = example.com
+krb5_realm = EXAMPLE.com
+realmd_tags = manages-system joined-with-samba
+cache_credentials = True
+id_provider = ad
+krb5_store_password_if_offline = True
+default_shell = /bin/bash
+ldap_id_mapping = True
+use_fully_qualified_names = False
+fallback_homedir = /home/%u
+access_provider = ad
+ldap_idmap_range_size = 400000
+krb5_validate = False

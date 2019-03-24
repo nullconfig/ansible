@@ -1,0 +1,14 @@
+cluster:
+  name: es-cluster
+node:
+  name: {{ inventory_hostname }}
+node.data: true
+node.master: false
+http.cors.enabled: false
+network.bind_host: 0.0.0.0
+network.publish_host: {{ ansible_host }}
+discovery.zen.ping.unicast.hosts:
+ - masternode01_ip
+ - masternode02_ip
+ - masternode03_ip
+path.logs: /var/log/elasticsearch/gc.log

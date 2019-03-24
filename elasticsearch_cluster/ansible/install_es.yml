@@ -1,0 +1,78 @@
+- name: install prereqs for cluster
+  hosts: es_cluster
+  gather_facts: false
+  become: true
+  tasks:
+    - name: installing java 8
+      shell: yum install -y java-1.8.0-openjdk-devel
+
+    - name: installing es
+      command: rpm -i https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.6.2.rpm
+
+- name: apply configurations to master nodes
+  hosts: es_master
+  gather_facts: true
+  become: true
+  roles:
+    - { role: elasticsearch_setup, es_node_type: masternode}
+
+- name: apply configurations to client nodes
+  hosts:  es_client
+  gather_facts: true
+  become: true
+  roles:
+    - { role: elasticsearch_setup, es_node_type: clientnode}
+
+- name: apply configurations to data nodes
+  hosts:  es_data
+  gather_facts: true
+  become: true
+  roles:
+    - { role: elasticsearch_setup, es_node_type: datanode} 
+  
+  tasks:
+    - name: edit the jvm.options file for datanodes
+      lineinfile:
+        path: /etc/elasticsearch/jvm.options
+        regexp: '^-Xms1g'
+        line: '-Xms12g'
+    
+    - name: add /dev/sdb to volume group and configure for elasticsearch
+      lvg:
+        vg: vg_root
+        pvs: /dev/sdb
+        pesize: 300G
+      lvol:
+        vg: vg_root
+        lv: lv_var_lib_es
+        size: 200G
+    - name: configure new logical volume with a filesystem and persistent mount    
+      filesystem:
+        fstype: xfs
+        dev: /dev/vg_root/lv_var_lib_es
+      lineinfile:
+        line: /dev/mapper/vg_root-lv_var_lib_es /var/lib/elasticsearch         xfs     defaults        1 2
+        path: /etc/fstab
+        create: true
+      shell: mount -a 
+        
+
+- name: install prereqs for cluster
+  hosts:  es_cluster
+  gather_facts: false
+  become: true
+  tasks:
+    - name: set directory permissions
+      shell: chown -R elasticsearch.elasticsearch {{ item }}
+      with_items:
+        - /usr/share/elasticsearch
+        - /etc/elasticsearch
+        - /var/lib/elasticsearch
+
+    - name: start and enable services
+      systemd:
+        state: started
+        enabled: true
+        masked: false
+        name: elasticsearch
+...

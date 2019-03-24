@@ -1,0 +1,34 @@
+---
+- name: join to domain
+  shell: |
+    realm leave example.dom
+    echo -ne {{ service_user_pass | trim }} | realm join --user {{ service_user }} example.com
+  args:
+    executable: /bin/bash
+
+- file:
+    path: /etc/sssd/sssd.conf
+    state: absent
+
+- name: add sssd.conf
+  template:
+    src: sssd.conf.j2
+    dest: /etc/sssd/sssd.conf
+    owner: root
+    group: root
+    mode: 0600
+
+- name: clean db files
+  file: path=/var/lib/sss/db/ state={{ item }}
+  with_items:
+    - absent
+    - directory
+
+- name: restart sssd
+  systemd:
+    state: restarted
+    name: sssd
+- name: check config
+  command: authconfig --enablesssd --enablesssdauth --disablewinbind --disablewinbindauth --enablemkhomedir --update
+...
+   

@@ -1,0 +1,15 @@
+---
+- name: apply elasticsearch cluster configs
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - /etc/elasticsearch/elasticsearch.yml
+
+- template:
+    src: "{{ es_node_type }}_elasticsearch.yml.j2"
+    dest: /etc/elasticsearch/elasticsearch.yml
+    owner: root
+    group: elasticsearch
+    mode: 0660
+...

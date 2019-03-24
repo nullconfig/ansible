@@ -1,0 +1,67 @@
+---
+- name: launch es cluster
+  hosts: terraform_server
+  become: true
+  gather_facts: false
+  tasks:
+   - name: terraform apply
+     terraform:
+       project_path: "{{ tf_project_path }}"
+       force_init: true
+       state: present
+
+- name: waiting for ssh access
+  pause: 
+    prompt: "Press return to continue. Press Ctrl+c and then \"a\" to abort"
+
+- name: install prereqs for cluster
+  hosts: es_cluster
+  gather_facts: false
+  become: true
+  tasks:
+    - name: move to correct folder
+      vmware_guest_move:
+        hostname: "{{ vsphere_hostname }}"
+        username: "{{ service_user }}"
+        password: "{{ service_user_pass | trim }}"
+        datacenter: "{{ vsphere_datacenter }}"
+        validate_certs: no
+        name: "{{ item }}"
+        dest_folder: "{{ vsphere_folder }}"
+      delegate_to: localhost
+      with_items:
+        - "{{ vsphere_vm_name }}"
+
+    - name: add dns nameservers
+      blockinfile:
+        path: /etc/resolv.conf
+        block: |
+          search  example.dom
+          nameserver 1.1.1.1
+          nameserver 8.8.8.8
+    
+    - name: enable repo
+      shell: yum-config-manager --enable CentOS-7.0.1406 - Base
+
+    - name: download domain tools
+      yum:
+        name:
+          - sssd
+          - realmd
+          - oddjob
+          - oddjob-mkhomedir
+          - adcli
+          - samba-common
+          - samba-common-tools
+          - krb5-workstation
+          - openldap-clients
+          - policycoreutils-python
+        state: latest
+
+- name: join new machines to domain
+  hosts: es_cluster
+  gather_facts: false
+  become: true
+  roles:
+    - join_domain    
+...
