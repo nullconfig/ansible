@@ -1,0 +1,20 @@
+---
+- name: Add port groups
+  hosts: all
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Add portgroups
+      vmware_portgroup:
+        validate_certs: False
+        hostname: "{{ vsphere_hostname }}"
+        username: "{{ vsphere_user }}"
+        password: "{{ vsphere_password | trim }}"
+        esxi_hostname: "{{ item }}"
+        switch_name: "{{ vsphere_vswitch }}"
+        portgroup_name: "{{ vsphere_portgroup.name }}"
+        vlan_id: "{{ vsphere_portgroup.tag }}"
+      delegate_to: localhost
+      with_items:
+        - "{{ vsphere_hosts }}"
+...

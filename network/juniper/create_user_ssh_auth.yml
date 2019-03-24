@@ -1,0 +1,11 @@
+---
+- name: create user and add ssh authentication
+  hosts: <define_inventory>
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: add ssh pub key to user 
+      junos_config:
+        lines:
+          - edit system login user <username> authentication ssh-rsa "{{ user_pubkey }}"
+...

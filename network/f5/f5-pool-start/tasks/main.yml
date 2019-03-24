@@ -1,0 +1,11 @@
+- name: Remove pool member from pool
+  bigip_pool_member:
+    server: lb.mydomain.com
+    user: admin
+    password: secret
+    state: absent
+    pool: my-pool
+    partition: Common
+    host: "{{ ansible_default_ipv4['address'] }}"
+    port: 80
+  delegate_to: localhost

@@ -1,0 +1,20 @@
+---
+- name: Create and add vlan with routed interface
+  hosts: switch
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: create vlan    
+      junos_vlan:
+        vlan_id: "{{ switch.vlan_id }}"
+        name: "{{ switch.vlan_name }}"
+        description: "{{ switch.vlan_description }}"
+
+    - name: create l3 interface and associate with vlan
+      junos_config:
+        lines:
+          - set interfaces vlan unit {{ switch.vlan_id }} family inet address {{ switch.vlan_inet_address }}
+          - set vlans {{ switch.vlan_name }} l3-interface {{ switch.vlan_l3_interface }}
+          - set routing-options static route {{ switch.destination_network }} next-hop {{ switch.next_hop }}
+...

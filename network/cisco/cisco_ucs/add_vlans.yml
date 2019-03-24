@@ -1,0 +1,15 @@
+---
+- name: Configure VLAN
+  hosts: ucsm
+  connection: local
+  gather_facts: false
+  tasks:
+    - ucs_vlans:
+        hostname: "{{ ucs_hostname }}"
+        use_ssl: false
+        username: "{{ ucs_user }}"
+        password: "{{ ucs_password }}"
+        name: "{{ vlan_name }}"
+        id: "{{ vlan_id }}"
+        native: 'no'
+...

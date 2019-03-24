@@ -13,7 +13,8 @@
          dest="configs/{{ ansible_net_hostname }}.cfg"
     
     - name: Push configs to repo 
-      shell: "{{ lookup('template', 'juniper-git-push.j2') }}"
+      shell: "{{ lookup('template', 'junos_git_push.j2') }}"
       args:
         executable: /bin/bash
       register: juniper-git-push_result
+...
