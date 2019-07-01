@@ -1,0 +1,34 @@
+---
+- name: Create a virtual machine from a template
+  vmware_guest:
+    hostname: "{{ vcenter.url }}"
+    username: "{{ vcenter.username }}"
+    password: "{{ vcenter.password | trim }}"
+    datacenter: "{{ vcenter.datacenter }}"
+    validate_certs: false
+    folder: "{{ folder }}"
+    name: "{{ vcenter_name }}"
+    state: poweredon
+    template: "{{ vcenter.template }}"
+    disk:
+    - size_gb: 20
+      type: thin
+      datastore: "{{ vcenter.datastore }}"
+    networks:
+    - name: "{{ vlan }}"
+      ip: "{{ ip_address }}"
+      netmask: "{{ netmask }}"
+      gateway: "{{ gateway }}"
+      type: static
+      domain: "{{ example.domain }}"
+      dns_servers: "{{ vcenter.dns_servers }}"
+  register: deploy
+  delegate_to: localhost
+
+- name: write ip address to the inventory
+  lineinfile:
+    path: ./environments/hosts
+    insertafter: '\[vmware_guest\]'
+    line: "{{ vcenter_name }}.{{ example.domain }}   {{ ip_address }}"
+    state: present
+...

@@ -1,0 +1,11 @@
+---
+- name: deploy centos 6 to tukwila
+  hosts: all
+  connection: local
+  gather_facts: false
+  roles: 
+    - ipam # include roles also carries variables to next role
+    - vm_create
+...
+     
+  

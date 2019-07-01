@@ -1,0 +1,10 @@
+---
+- name: resize logical volume
+  lvol:
+    vg: "{{ lvm.vg }}"
+    lv: "{{ lvm.lv }}"
+    pvs: "{{ device }}"
+    size: "{{ lvm.size }}"
+    state: present
+    shrink: false
+...

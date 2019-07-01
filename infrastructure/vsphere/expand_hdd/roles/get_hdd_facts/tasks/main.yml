@@ -1,0 +1,12 @@
+- name: Gather disk facts from virtual machine using name
+  vmware_guest_disk_facts:
+    hostname: "{{ krkvcenter.url }}"
+    username: "{{ krkvcenter.username }}"
+    password: "{{ krkvcenter.password | trim }}"
+    datacenter: "{{ krkvcenter.datacenter }}"
+    validate_certs: no
+    name: "{{ vcenter_name }}"
+  delegate_to: localhost
+  register: disk_facts
+
+- debug: msg="{{ disk_facts }}"

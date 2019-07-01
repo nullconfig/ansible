@@ -1,0 +1,3 @@
+---
+- import_playbook: centos6_deploy.yml
+...

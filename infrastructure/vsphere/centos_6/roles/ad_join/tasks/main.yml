@@ -1,0 +1,46 @@
+---
+- name: chkconfig for winbind and sssd
+  command: |
+    chkconfig sssd on
+    chkconfig winbind off
+
+- name: deleting sssd.conf if exists
+  file: path=/etc/{{ item }} state=absent
+  with_items:
+    - sssd/sssd.conf
+    - krb5.conf
+
+- name: run authconfig
+  command: authconfig --disableldap --disableldapauth --disablekrb5 --enablesssd --enablesssdauth --disablewinbind --disablewinbindauth --enablemkhomedir --update
+
+- name: turn off winbind
+  service:
+    name: winbind
+    state: stopped
+
+- name: joining to {{ example.domain }}
+  shell: echo -ne {{ example.password | trim }} | adcli join -U {{ example.username }} --stdin-password {{ example.domain }}
+  args:
+    executable: /bin/bash
+
+- name: place krb5.conf file
+  template:
+    src: krb5.conf.j2
+    dest: /etc/krb5.conf
+    owner: root
+    mode: 0644
+
+- name: place sssd.conf file
+  template:
+    src: sssd.conf.j2
+    dest: /etc/sssd/sssd.conf
+    owner: root
+    mode: 0600
+
+- name: clean db files
+  file: path=/var/lib/sss/db/ state={{ item }}
+  with_items:
+    - absent
+    - directory
+  notify: restart sssd  
+...

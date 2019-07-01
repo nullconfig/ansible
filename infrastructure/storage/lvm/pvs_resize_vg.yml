@@ -1,0 +1,11 @@
+# Resizing volume group with
+# new unparted disk
+#
+---
+- name: pvcreate to add new disk to volume group
+  hosts: all
+  become: true
+  roles:
+    - resize_vg
+    - resize_lv
+...

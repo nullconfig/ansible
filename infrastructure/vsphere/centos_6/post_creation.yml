@@ -1,0 +1,9 @@
+---
+- name: join domain and spacewalk
+  hosts: vmware_guest
+  become_user: root
+  gather_facts: false
+  roles:
+    - spacewalk
+    - ad_join
+...

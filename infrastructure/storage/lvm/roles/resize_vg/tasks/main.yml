@@ -1,0 +1,8 @@
+# resizing volume group 
+# vgextend <volumegroupname> /dev/sdX
+---
+- name: resize volume group
+  lvg:
+    vg: "{{ lvm.vg }}"
+    pvs: "{{ device }}"
+...

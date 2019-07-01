@@ -1,0 +1,7 @@
+---
+- name: collect ip from phpipam
+  hosts: ipam
+  connection: local
+  gather_facts: false
+  roles:
+    - ipam

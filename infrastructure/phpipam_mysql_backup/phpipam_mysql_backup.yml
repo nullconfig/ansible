@@ -1,0 +1,8 @@
+---
+- hosts: all
+  vars:
+  become: true
+  tasks: 
+    - name: running mysqldump backups to nfs directory
+      command: /mnt/backups/DB/scripts/phpipam/ipam-db-backup.sh
+...

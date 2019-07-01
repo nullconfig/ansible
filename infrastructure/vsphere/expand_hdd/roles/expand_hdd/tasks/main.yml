@@ -1,0 +1,19 @@
+---
+- name: Specify vcenter and guest
+  vmware_guest:
+    hostname: "{{ krkvcenter.url }}"
+    username: "{{ krkvcenter.username }}"
+    password: "{{ krkvcenter.password | trim }}"
+    datacenter: "{{ krkvcenter.datacenter }}"
+    validate_certs: false
+    folder: "{{ folder }}"
+    name: "{{ vcenter_name }}"
+    state: present
+    template: "{{ krkvcenter.template }}"
+    disk:
+    - size_gb: "{{ hdd_size }}"
+      type: thin
+      datastore: "{{ krkvcenter.datastore }}"
+  register: resize
+  delegate_to: localhost
+...

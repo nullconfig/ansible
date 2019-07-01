@@ -1,0 +1,46 @@
+---
+- hosts: all
+  become: yes
+  become_user: ec2-user
+  
+  tasks:
+  - name: Updating local repo to {{ _Release_Tag }}
+    git:
+      repo: 'ssh://git@stash.example.dom//redacted.git'
+      dest: /home/ec2-user/_wp_plugin/redacted
+      version: "{{ _Release_Tag }}"
+
+  - name: Deleting SVN repo
+    file:
+      path: "/home/ec2-user/_wp_plugin/wp-deploy"
+      status: absent
+
+  - name: Downloading lastest version of redacted svn repo
+    subversion:
+      repo: https://plugins.svn.wordpress.org/redacted
+      dest: "/home/ec2-user/_wp_plugin/wp-deploy"
+
+  - name: Syncing from Git to SVN repos
+    synchronize:
+      src: /home/ec2-user/_wp_plugin/redacted/
+      dest: /home/ec2-user/_wp_plugin/wp-deploy/trunk/
+      delete: yes
+      recursive: yes
+    delegate_to: "{{ inventory_hostname }}"
+
+  - name: Set Plugin Version
+    shell: grep -Ei "version:" /home/ec2-user/_wp_plugin/wp-deploy/trunk/redacted.php | cut -d ":" -f 2 |tr -d ' ' | tr -d '\r'
+    register: plugin_version
+
+  - name: Check-in version {{ plugin_version }} to wordpress
+    shell: cd /home/ec2-user/_wp_plugin/wp-deploy && svn ci 'Update to version {{ plugin_version }}'
+
+  - name: Create a copy of the code from the trunk directory to the tag release directory
+    shell: cd /home/ec2-user/_wp_plugin/wp-deploy && svn cp trunk tags/{{ plugin_version }}
+
+  - name: Check-in the updated tag directory
+    shell: cd /home/ec2-user/_wp_plugin/wp-deploy && svn ci -m 'Tagged with v {{ plugin_version }}'
+
+  - name: Deployment of redacted Completed
+    debug:
+      msg: "Done with Deployment."

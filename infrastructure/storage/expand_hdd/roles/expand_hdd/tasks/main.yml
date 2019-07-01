@@ -1,0 +1,19 @@
+---
+- name: Specify vcenter and guest
+  vmware_guest:
+    hostname: "{{ vcenter.url }}"
+    username: "{{ vcenter.username }}"
+    password: "{{ vcenter.password | trim }}"
+    datacenter: "{{ vcenter.datacenter }}"
+    validate_certs: false
+    folder: "{{ folder }}"
+    name: "{{ vcenter_name }}"
+    state: present
+    template: "{{ vcenter.template }}"
+    disk:
+    - size_gb: "{{ hdd_size }}"
+      type: thin
+      datastore: "{{ vcenter.datastore }}"
+  register: resize
+  delegate_to: localhost
+...

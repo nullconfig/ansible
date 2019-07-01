@@ -1,0 +1,21 @@
+---
+- name: add dns servers
+  template:
+    src: resolv.conf.j2
+    dest: /etc/resolv.conf
+    mode: 0644
+
+- name: join spacewalk
+  rhn_register:
+    state: present
+    activationkey: "{{ rhn.activationkey }}"
+    server_url: "{{ rhn.url }}"
+
+- name: install adcli and sssd
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - adcli
+    - sssd-ad
+...

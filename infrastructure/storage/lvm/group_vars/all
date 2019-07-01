@@ -1,0 +1,13 @@
+# LVM variables
+# default volume group: vg_root
+# default logical volumes:
+#   /root - lv_root
+#   /home - lv_home
+#   /tmp - lv_tmp
+#   /opt - lv_opt
+#   /var - lv_var
+lvm:
+  vg: vg_root
+  lv: lv_opt
+  size: 100G
+device: /dev/sdb

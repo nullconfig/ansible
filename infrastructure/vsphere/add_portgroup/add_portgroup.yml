@@ -1,0 +1,45 @@
+---
+- name: Add port groups
+  hosts: all
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Add 109 portgroup vmware_portgroup
+      vmware_portgroup:
+        validate_certs: False
+        hostname: vcenter.example.dom 
+        username: linuxservice
+        password: "{{ esxi_password | trim }}"
+        esxi_hostname: "{{ item }}"
+        switch_name: vSwitch1
+        portgroup_name: SIP-outside
+        vlan_id: 109
+      delegate_to: localhost
+      with_items:
+        - belvmserver20.example.dom
+        - belvmserver21.example.dom
+        - belvmserver22.example.dom
+        - belvmserver23.example.dom
+        - belvmserver24.example.dom
+        - belvmserver25.example.dom
+        - belvmserver26.example.dom
+
+    - name: Add 110 Network VM Portgroup
+      vmware_portgroup:
+        validate_certs: False
+        hostname: vcenter.example.dom 
+        username: linuxservice 
+        password: "{{ esxi_password | trim }}"
+        esxi_hostname: "{{ item }}"
+        switch_name: vSwitch1 
+        portgroup_name: SIP-inside
+        vlan_id: 110 
+      delegate_to: localhost
+      with_items:
+        - belvmserver20.example.dom
+        - belvmserver21.example.dom
+        - belvmserver22.example.dom
+        - belvmserver23.example.dom
+        - belvmserver24.example.dom
+        - belvmserver25.example.dom
+        - belvmserver26.example.dom

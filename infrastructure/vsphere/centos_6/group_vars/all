@@ -1,0 +1,58 @@
+# domain vmware constant variables
+domainvcenter:
+  url: domainvcenter.domain.example.com
+  username: 'linuxservice@domain.example.com'
+  password: !vault |
+    $ANSIBLE_VAULT;1.1;AES256
+    65663737613033653536393966323835623138366438323262313365306538633038376232346435
+    6531393963336636666331306633666263666365386133360a333862376436653361633935343063
+    63653964343235303634653831393963313364396162393932663363653265656162353163326465
+    3035386333616161630a623336313134613638306137343566356137643562313134393465623566
+    3565
+  datastore: VMFS_domainUNITY300F_04
+  template: tmpl_centos-6.6_x86_64
+  dns_servers:
+    - 10.245.4.11
+    - 10.245.4.12
+  domain: domain.example.com
+  datacenter: domain VM Environment
+
+  # host vars for new VMs
+  # ---------------------
+  # folder: PROD_LNXSERVICE
+  # name: domaincentostest01
+  # vlan: VLAN406_domain Application
+  
+# phpipam 
+ipam:
+  app_id: mlphpipam
+  api_user: rest_user
+  api_pass: password
+  token_request: https://ipam.example.dom/api/mlphpipam/user/
+  available_ip: https://ipam.example.dom/api/mlphpipam/addresses/first_free/
+  register_ip: https://ipam.example.dom/api/mlphpipam/addresses/
+  subnet_id: 31
+  # staging_subnet_id:
+  # devtest_subnet_id:
+  hostname: centostest01.example.com
+  description: ansible created
+  gateway: 10.245.6.1
+  netmask: 255.255.254.0
+
+# sssd
+domain:
+  domain: domain.example.com 
+  homedir: home/%u
+  username: linuxservice
+  password: !vault |
+    $ANSIBLE_VAULT;1.1;AES256
+    65663737613033653536393966323835623138366438323262313365306538633038376232346435
+    6531393963336636666331306633666263666365386133360a333862376436653361633935343063
+    63653964343235303634653831393963313364396162393932663363653265656162353163326465
+    3035386333616161630a623336313134613638306137343566356137643562313134393465623566
+    3565
+
+# spacewalk
+rhn:
+  activationkey: 1-mlproduction-centos-6.6-x86_64
+  url: http://belspacewalk.example.dom/XMLRPC
