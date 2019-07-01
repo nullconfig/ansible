@@ -1,7 +1,0 @@
----
-- name: expand vmware guest hdd
-  hosts: all
-  connection: local
-  roles:
-    - get_hdd_facts
-...
