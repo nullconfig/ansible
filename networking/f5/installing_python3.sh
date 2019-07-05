@@ -59,16 +59,40 @@ rpm -i --nosignature gcc-c++-4.8.5-36.el7.x86_64.rpm
 # gettext 
 curl http://mirror.centos.org/centos/7/os/x86_64/Packages/gettext-0.19.8.1-2.el7.x86_64.rpm -o gettext-0.19.8.1-2.el7.x86_64.rpm
 curl http://mirror.centos.org/centos/7/os/x86_64/Packages/gettext-libs-0.19.8.1-2.el7.x86_64.rpm -o gettext-libs-0.19.8.1-2.el7.x86_64.rpm
-curl http://mirror.centos.org/centos/7/os/x86_64/Packages/gettext-libs-0.19.8.1-2.el7.x86_64.rpm -o 
 rpm -i --nosignature gettext-libs-0.19.8.1-2.el7.x86_64.rpm
-rpm -Uvh --nosignature gettext-0.19.8.1-2.el7.x86_64.rpm
+rpm -Uvh --nosignature gettext-libs-0.19.8.1-2.el7.x86_64.rpm gettext-0.19.8.1-2.el7.x86_64.rpm
+
+# libtool
+curl http://mirror.centos.org/centos/7/os/x86_64/Packages/libtool-2.4.2-22.el7_3.x86_64.rpm -o libtool-2.4.2-22.el7_3.x86_64.rpm
+rpm -i --nosignature libtool-2.4.2-22.el7_3.x86_64.rpm
+
+# make is already installed
+curl http://mirror.centos.org/centos/7/os/x86_64/Packages/make-3.82-23.el7.x86_64.rpm -o make-3.82-23.el7.x86_64.rpm
+rpm -i --nosignature make-3.82-23.el7.x86_64.rpm
+
+# git install
+curl https://packages.endpoint.com/rhel/7/os/x86_64//git-2.8.4-1.ep7.x86_64.rpm -o git-2.8.4-1.ep7.x86_64.rpm
+curl http://mirror.centos.org/centos/7/os/x86_64/Packages/perl-Error-0.17020-2.el7.noarch.rpm -o perl-Error-0.17020-2.el7.noarch.rpm
+curl http://mirror.centos.org/centos/7/os/x86_64/Packages/emacs-filesystem-24.3-22.el7.noarch.rpm -o emacs-filesystem-24.3-22.el7.noarch.rpm
+curl https://packages.endpoint.com/rhel/7/os/x86_64//git-core-2.8.4-1.ep7.x86_64.rpm -o git-core-2.8.4-1.ep7.x86_64.rpm
+curl https://packages.endpoint.com/rhel/7/os/x86_64//git-core-doc-2.8.4-1.ep7.x86_64.rpm -o git-core-doc-2.8.4-1.ep7.x86_64.rpm
+curl https://packages.endpoint.com/rhel/7/os/x86_64//perl-Git-2.8.4-1.ep7.noarch.rpm -o perl-Git-2.8.4-1.ep7.noarch.rpm
+curl http://mirror.centos.org/centos/7/os/x86_64/Packages/perl-Git-1.8.3.1-19.el7.noarch.rpm -o perl-Git-1.8.3.1-19.el7.noarch.rpm
+curl http://mirror.centos.org/centos/7/os/x86_64/Packages/perl-TermReadKey-2.30-20.el7.x86_64.rpm -o perl-TermReadKey-2.30-20.el7.x86_64.rpm
+rpm -i --nosignature emacs-filesystem-24.3-22.el7.noarch.rpm perl-Error-0.17020-2.el7.noarch.rpm perl-TermReadKey-2.30-20.el7.x86_64.rpm
+curl http://mirror.centos.org/centos/7/os/x86_64/Packages/libgnome-keyring-3.12.0-1.el7.x86_64.rpm -o libgnome-keyring-3.12.0-1.el7.x86_64.rpm
+rpm -i --nosignature libgnome-keyring-3.12.0-1.el7.x86_64.rpm
+rpm -i --nosignature git-core-2.8.4-1.ep7.x86_64.rpm 
+rpm -i --nosignature git-core-doc-2.8.4-1.ep7.x86_64.rpm 
+rpm -i --nosignature perl-Git-2.8.4-1.ep7.noarch.rpm git-2.8.4-1.ep7.x86_64.rpm
+
 
 install next: git libexpat1-dev libssl-dev zlib1g-dev \
   libncurses5-dev libbz2-dev liblzma-dev \
   libsqlite3-dev libffi-dev tcl-dev linux-headers-generic libgdbm-dev \
   libreadline-dev tk tk-dev
 
-  
+
   git clone https://github.com/python/cpython.git
   cd cpython && ./configure --prefix=/usr \
   --enable-loadable-sqlite-extensions \
